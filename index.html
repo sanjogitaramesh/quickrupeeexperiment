@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dark Side of Fintech — Research Study</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--purple:#673AB7;--purple-dark:#512DA8;--purple-light:#EDE7F6;--text:#1a1a1a;--muted:#555;--border:#dadce0;--bg:#f0ebf8;--card:#fff;--red:#d93025;--green:#1e8e3e}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:0;min-height:100vh}
+.container{max-width:680px;margin:0 auto;padding:32px 16px 60px}
+.screen{display:none}.screen.active{display:block}
+.header-card{background:var(--card);border-radius:12px;overflow:hidden;margin-bottom:20px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.header-banner{height:12px;background:linear-gradient(135deg,var(--purple),var(--purple-dark))}
+.header-content{padding:28px 28px 24px}
+.header-content h1{font-family:'Instrument Serif',serif;font-size:30px;font-weight:400;line-height:1.25;margin-bottom:12px}
+.header-content p{font-size:14px;color:var(--muted);line-height:1.7}
+.req-note{font-size:13px;color:var(--red);margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px 28px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.q-label{font-size:15px;font-weight:500;margin-bottom:16px;line-height:1.55}
+.q-label .req{color:var(--red);margin-left:2px}
+.options{display:flex;flex-direction:column;gap:2px}
+.option{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text);padding:8px 4px;border-radius:8px;cursor:pointer;transition:background .15s}
+.option:hover{background:#f8f5ff}
+.option input[type=radio]{width:20px;height:20px;accent-color:var(--purple);cursor:pointer;flex-shrink:0}
+.option .other-field{border:none;border-bottom:1.5px solid var(--border);padding:4px 0;font-size:14px;font-family:'DM Sans',sans-serif;width:160px;background:transparent;color:var(--text);outline:none}
+.option .other-field:focus{border-color:var(--purple)}
+.option .other-field:disabled{opacity:.4}
+.section-bar{background:var(--purple);color:#fff;padding:14px 28px;border-radius:12px 12px 0 0;font-size:16px;font-weight:600;margin-top:28px}
+.section-desc{background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 12px 12px;padding:18px 28px;margin-bottom:16px;font-size:14px;color:var(--muted);font-style:italic;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.btn-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
+.btn{padding:10px 28px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity .15s}
+.btn-primary{background:var(--purple);color:#fff}.btn-primary:hover{opacity:.9}.btn-primary:disabled{opacity:.5;cursor:default}
+.btn-outline{background:transparent;color:var(--purple);border:1px solid var(--border)}
+.scenario-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px 28px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.scenario-card h2{font-size:18px;font-weight:700;margin-bottom:16px}
+.scenario-card p{font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:12px}
+.scenario-card .checklist{list-style:none;padding:0;margin:16px 0}
+.scenario-card .checklist li{font-size:14px;padding:5px 0;display:flex;align-items:center;gap:10px}
+.scenario-card .checklist li::before{content:"✅";font-size:15px}
+.important{font-weight:700;font-size:14px;margin:12px 0 6px}
+.iframe-wrap{display:flex;justify-content:center;padding:10px 0}
+.iframe-wrap iframe{border:none;width:100%;max-width:460px;transition:height 0.15s ease}
+.loader-box{text-align:center;padding:80px 20px}
+.spin{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--purple);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-text{font-size:14px;color:var(--muted)}
+.thankyou-box{text-align:center;padding:60px 20px}
+.thankyou-box .icon{font-size:56px;margin-bottom:16px}
+.thankyou-box h2{font-size:22px;font-weight:700;margin-bottom:10px}
+.thankyou-box p{font-size:14px;color:var(--muted);line-height:1.7}
+.q-card.error{border-color:var(--red);box-shadow:0 0 0 1px var(--red)}
+.error-msg{font-size:12px;color:var(--red);margin-top:6px;display:none}
+.q-card.error .error-msg{display:block}
+.step-info{text-align:center;font-size:12px;color:var(--muted);margin-bottom:16px}
+@media(max-width:500px){.container{padding:12px 8px 32px}.header-content{padding:20px 16px}.q-card{padding:18px 16px}.header-content h1{font-size:24px}.iframe-wrap{padding:0}.iframe-wrap iframe{max-width:100%;border-radius:0}.scenario-card{padding:24px 16px}.btn-row{margin-top:14px}.option{padding:10px 4px;gap:10px;font-size:15px}.option input[type=radio]{width:22px;height:22px}.btn{padding:12px 28px;font-size:15px;min-height:46px}.q-label{font-size:15px;margin-bottom:14px}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- CONSENT -->
+<div id="screen-consent" class="screen active">
+  <div class="header-card"><div class="header-banner"></div><div class="header-content">
+    <h1>Dark Side of Fintech: A study on dark patterns in digital lending interfaces</h1>
+    <p>This survey is part of the doctoral research study on digital lending interfaces conducted by Sanjogita R, Doctoral Research Scholar, S.P. Jain Institute of Management and Research. It takes about 8–10 minutes. Your responses are completely anonymous.</p>
+    <div class="req-note">* Indicates required question</div>
+  </div></div>
+  <div class="q-card" id="card-consent"><div class="q-label">I have read the information above and voluntarily agree to participate in this study.<span class="req"> *</span></div>
+    <div class="options">
+      <label class="option"><input type="radio" name="consent" value="yes"><span>Yes, I consent to participate</span></label>
+      <label class="option"><input type="radio" name="consent" value="no"><span>No, I do not wish to participate</span></label>
+    </div><div class="error-msg">Please select an option to continue.</div>
+  </div>
+  <div class="btn-row"><button class="btn btn-primary" onclick="handleConsent()">Next →</button><span></span></div>
+</div>
+
+<!-- SCENARIO -->
+<div id="screen-scenario" class="screen">
+  <div class="header-card"><div class="header-banner"></div><div class="header-content"><h1>Loan Application Simulation</h1><p>You are about to interact with a loan application interface. Please treat it as if it were a real application.</p></div></div>
+  <div class="scenario-card"><h2>Before you begin</h2><p>Please read the following scenario carefully:</p><p class="important">IMPORTANT:</p>
+    <ul class="checklist"><li>Imagine you need ₹20,000 for an urgent medical expense</li><li>Complete the application as you naturally would</li><li>Read all information carefully</li></ul>
+    <p style="margin-top:16px;color:var(--text)">The interface will open below when you click "Begin." Take your time — there is no time pressure.</p>
+  </div>
+  <div class="btn-row"><button class="btn btn-primary" onclick="startInterface()">Begin loan application →</button><span></span></div>
+</div>
+
+<!-- LOADING -->
+<div id="screen-loading" class="screen"><div class="loader-box"><div class="spin"></div><div class="loader-text">Setting up your application...</div></div></div>
+
+<!-- INTERFACE -->
+<div id="screen-interface" class="screen">
+  <div class="step-info">Step 1 of 3 — Loan Application</div>
+  <div class="iframe-wrap"><iframe id="loanFrame" allow=""></iframe></div>
+</div>
+
+<!-- DEMOGRAPHICS -->
+<div id="screen-demographics" class="screen">
+  <div class="step-info">Step 2 of 3 — Background Survey</div>
+  <div class="header-card"><div class="header-banner"></div><div class="header-content"><h1>A few questions about you</h1><p>This helps us understand different perspectives. All responses are completely anonymous and cannot be traced back to you.</p></div></div>
+
+  <div class="q-card" id="card-q2"><div class="q-label">What is your age?<span class="req"> *</span></div><div class="options">
+    <label class="option"><input type="radio" name="q2" value="18–24 years"><span>18–24 years</span></label>
+    <label class="option"><input type="radio" name="q2" value="25–30 years"><span>25–30 years</span></label>
+    <label class="option"><input type="radio" name="q2" value="31–35 years"><span>31–35 years</span></label>
+    <label class="option"><input type="radio" name="q2" value="36–40 years"><span>36–40 years</span></label>
+    <label class="option"><input type="radio" name="q2" value="41–45 years"><span>41–45 years</span></label>
+    <label class="option"><input type="radio" name="q2" value="45 and above"><span>45 and above</span></label>
+  </div><div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-q3"><div class="q-label">What is your highest education level?<span class="req"> *</span></div><div class="options">
+    <label class="option"><input type="radio" name="q3" value="Higher Secondary (12th standard)"><span>Higher Secondary (12th standard)</span></label>
+    <label class="option"><input type="radio" name="q3" value="Undergraduate (BE/B.com/B.Sc/BBA/BA etc)"><span>Undergraduate (BE/B.com/B.Sc/BBA/BA etc)</span></label>
+    <label class="option"><input type="radio" name="q3" value="Post Graduate (MBA/MA/M.Sc etc)"><span>Post Graduate (MBA/MA/M.Sc etc)</span></label>
+    <label class="option"><input type="radio" name="q3" value="Doctoral (PhD)"><span>Doctoral (PhD)</span></label>
+    <label class="option"><input type="radio" name="q3" value="other" onchange="toggleOther('q3')"><span>Other:</span><input type="text" class="other-field" id="q3-other" disabled placeholder="Please specify"></label>
+  </div><div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-q4"><div class="q-label">What is your current employment status?<span class="req"> *</span></div><div class="options">
+    <label class="option"><input type="radio" name="q4" value="Salaried-private sector"><span>Salaried-private sector</span></label>
+    <label class="option"><input type="radio" name="q4" value="Salaried-government sector"><span>Salaried-government sector</span></label>
+    <label class="option"><input type="radio" name="q4" value="Self employed/Business Owner"><span>Self employed/Business Owner</span></label>
+    <label class="option"><input type="radio" name="q4" value="Student"><span>Student</span></label>
+    <label class="option"><input type="radio" name="q4" value="Freelancer"><span>Freelancer</span></label>
+    <label class="option"><input type="radio" name="q4" value="Unemployed"><span>Unemployed</span></label>
+    <label class="option"><input type="radio" name="q4" value="other" onchange="toggleOther('q4')"><span>Other:</span><input type="text" class="other-field" id="q4-other" disabled placeholder="Please specify"></label>
+  </div><div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-q5"><div class="q-label">What is your approximate monthly income?<span class="req"> *</span></div><div class="options">
+    <label class="option"><input type="radio" name="q5" value="Below Rs 15000"><span>Below Rs 15000</span></label>
+    <label class="option"><input type="radio" name="q5" value="Rs 15000–30000"><span>Rs 15000–30000</span></label>
+    <label class="option"><input type="radio" name="q5" value="Rs 30001–50000"><span>Rs 30001–50000</span></label>
+    <label class="option"><input type="radio" name="q5" value="Rs 50001–100000"><span>Rs 50001–100000</span></label>
+    <label class="option"><input type="radio" name="q5" value="Above Rs 100000"><span>Above Rs 100000</span></label>
+    <label class="option"><input type="radio" name="q5" value="Prefer not to say"><span>Prefer not to say</span></label>
+  </div><div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-q6"><div class="q-label">Have you ever applied for a loan through a mobile app or a website? (eg: Lazypay, Kredit bee, paysense, Bajaj Finserv etc)<span class="req"> *</span></div><div class="options">
+    <label class="option"><input type="radio" name="q6" value="Yes, I have applied successfully and taken the loan"><span>Yes, I have applied successfully and taken the loan</span></label>
+    <label class="option"><input type="radio" name="q6" value="Yes, I have applied but not complete the process"><span>Yes, I have applied but not complete the process</span></label>
+    <label class="option"><input type="radio" name="q6" value="No, but I have browsed such applications"><span>No, but I have browsed such applications</span></label>
+    <label class="option"><input type="radio" name="q6" value="No, I have never used such digital lending apps"><span>No, I have never used such digital lending apps</span></label>
+  </div><div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-q7"><div class="q-label">How many lending apps do you currently have on your phone?<span class="req"> *</span></div><div class="options">
+    <label class="option"><input type="radio" name="q7" value="1–2"><span>1–2</span></label>
+    <label class="option"><input type="radio" name="q7" value="3–5"><span>3–5</span></label>
+    <label class="option"><input type="radio" name="q7" value="More than 5"><span>More than 5</span></label>
+    <label class="option"><input type="radio" name="q7" value="None"><span>None</span></label>
+  </div><div class="error-msg">This question is required.</div></div>
+
+  <div class="btn-row"><button class="btn btn-primary" onclick="goToFinancial()">Next →</button><span></span></div>
+</div>
+
+<!-- FINANCIAL LITERACY -->
+<div id="screen-financial" class="screen">
+  <div class="step-info">Step 3 of 3 — Financial Literacy</div>
+  <div class="section-bar">Financial Literacy</div>
+  <div class="section-desc">Answer based on what you know — do not look up answers. There are no penalties for wrong answers.</div>
+
+  <div class="q-card" id="card-q8"><div class="q-label">You put ₹1,00,000 in a savings account at 2% interest per year. How much will be there after one year?<span class="req"> *</span></div><div class="options">
+    <label class="option"><input type="radio" name="q8" value="₹1,00,020"><span>₹1,00,020</span></label>
+    <label class="option"><input type="radio" name="q8" value="₹1,02,000"><span>₹1,02,000</span></label>
+    <label class="option"><input type="radio" name="q8" value="₹1,20,000"><span>₹1,20,000</span></label>
+    <label class="option"><input type="radio" name="q8" value="₹1,00,200"><span>₹1,00,200</span></label>
+    <label class="option"><input type="radio" name="q8" value="I don't know"><span>I don't know</span></label>
+  </div><div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-q9"><div class="q-label">Your savings account pays 1% interest per year but inflation is 2%. After one year you can buy:<span class="req"> *</span></div><div class="options">
+    <label class="option"><input type="radio" name="q9" value="More than today"><span>More than today</span></label>
+    <label class="option"><input type="radio" name="q9" value="Exactly the same"><span>Exactly the same</span></label>
+    <label class="option"><input type="radio" name="q9" value="Less than today"><span>Less than today</span></label>
+    <label class="option"><input type="radio" name="q9" value="Impossible to tell"><span>Impossible to tell</span></label>
+    <label class="option"><input type="radio" name="q9" value="I don't know"><span>I don't know</span></label>
+  </div><div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-q10"><div class="q-label">You have ₹1,00,000 at 10% interest per year. After 5 years you will have:<span class="req"> *</span></div><div class="options">
+    <label class="option"><input type="radio" name="q10" value="More than ₹1,50,000"><span>More than ₹1,50,000</span></label>
+    <label class="option"><input type="radio" name="q10" value="Exactly ₹1,50,000"><span>Exactly ₹1,50,000</span></label>
+    <label class="option"><input type="radio" name="q10" value="Less than ₹1,50,000"><span>Less than ₹1,50,000</span></label>
+    <label class="option"><input type="radio" name="q10" value="I don't know"><span>I don't know</span></label>
+  </div><div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-q11"><div class="q-label">Which statement is correct?<span class="req"> *</span></div><div class="options">
+    <label class="option"><input type="radio" name="q11" value="Buying shares in one company is less risky than a mutual fund"><span>Buying shares in one company is less risky than a mutual fund</span></label>
+    <label class="option"><input type="radio" name="q11" value="A mutual fund is less risky than buying shares in one company"><span>A mutual fund is less risky than buying shares in one company</span></label>
+    <label class="option"><input type="radio" name="q11" value="Both carry the same risk"><span>Both carry the same risk</span></label>
+    <label class="option"><input type="radio" name="q11" value="I don't know"><span>I don't know</span></label>
+  </div><div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-q12"><div class="q-label">You take ₹60,000 loan repayable in 12 equal monthly instalments at 0% interest. What is your monthly EMI?<span class="req"> *</span></div><div class="options">
+    <label class="option"><input type="radio" name="q12" value="₹6,000"><span>₹6,000</span></label>
+    <label class="option"><input type="radio" name="q12" value="₹4,500"><span>₹4,500</span></label>
+    <label class="option"><input type="radio" name="q12" value="₹5,000"><span>₹5,000</span></label>
+    <label class="option"><input type="radio" name="q12" value="₹7,200"><span>₹7,200</span></label>
+    <label class="option"><input type="radio" name="q12" value="I don't know"><span>I don't know</span></label>
+  </div><div class="error-msg">This question is required.</div></div>
+
+  <div class="btn-row">
+    <button class="btn btn-outline" onclick="showScreen('demographics')">← Back</button>
+    <button class="btn btn-primary" onclick="submitAll()">Submit all responses</button>
+  </div>
+</div>
+
+<!-- SUBMITTING -->
+<div id="screen-submitting" class="screen"><div class="loader-box"><div class="spin"></div><div class="loader-text">Submitting your responses...</div></div></div>
+
+<!-- THANK YOU -->
+<div id="screen-thankyou" class="screen"><div class="thankyou-box"><div class="icon">🙏</div><h2>Thank you for participating!</h2><p>Your responses have been recorded successfully.<br>This study examines how interface design affects financial decision-making.<br><br><strong>Sanjogita R</strong><br>S.P. Jain Institute of Management and Research</p></div></div>
+
+<!-- DECLINED -->
+<div id="screen-declined" class="screen"><div class="thankyou-box"><div class="icon">🙏</div><h2>Thank you for your consideration</h2><p>We respect your decision. You may close this page.</p></div></div>
+
+</div>
+
+<script>
+// ============================================================
+// Replace with your deployed Google Apps Script Web App URL
+var SHEET_URL = "https://script.google.com/macros/s/AKfycbyOLrjNSs7QPSni0tfqzfSDTJaT1VGPJ6OGbaPAQDbgHSIpZP2-7-W11toAtVdiiO2Z/exec";
+// ============================================================
+
+var assignedCondition = null;
+var participantNumber = null;
+var participantId = 'P_' + Date.now() + '_' + Math.random().toString(36).substr(2,4);
+var loanData = null;
+var interfaceStartTime = 0;
+var interfaceDuration = 0;
+
+function showScreen(id) {
+  var container = document.querySelector('.container');
+  container.style.opacity = '0';
+  container.style.transition = 'opacity 0.2s ease';
+  setTimeout(function() {
+    document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById('screen-' + id).classList.add('active');
+    window.scrollTo(0,0);
+    container.style.opacity = '1';
+  }, 200);
+}
+
+function handleConsent() {
+  var sel = document.querySelector('input[name="consent"]:checked');
+  var card = document.getElementById('card-consent');
+  if (!sel) { card.classList.add('error'); return; }
+  card.classList.remove('error');
+  if (sel.value === 'no') { showScreen('declined'); return; }
+  showScreen('scenario');
+}
+
+// ---- Condition assignment ----
+function fetchCondition() {
+  if (assignedCondition) return Promise.resolve();
+  if (SHEET_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
+    assignedCondition = Date.now() % 2 === 0 ? 'Control' : 'Treatment';
+    participantNumber = 0;
+    console.warn('Demo mode — condition:', assignedCondition);
+    return Promise.resolve();
+  }
+  return fetch(SHEET_URL + '?action=assign')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (data.status === 'success') {
+        assignedCondition = data.condition;
+        participantNumber = data.participantNumber;
+      } else { throw new Error(data.message); }
+    })
+    .catch(function(err){
+      console.warn('Assignment failed, using random:', err);
+      assignedCondition = Math.random() < 0.5 ? 'Control' : 'Treatment';
+      participantNumber = -1;
+    });
+}
+
+// ---- Start interface with robust loading ----
+function startInterface() {
+  showScreen('loading');
+
+  var resolved = false;
+  var done = function() {
+    if (resolved) return;
+    resolved = true;
+    if (!assignedCondition) {
+      assignedCondition = Date.now() % 2 === 0 ? 'Control' : 'Treatment';
+      participantNumber = -1;
+    }
+    loadIframe();
+  };
+
+  fetchCondition().then(done).catch(done);
+  setTimeout(done, 1500);
+}
+
+function loadIframe() {
+  var src = assignedCondition === 'Treatment'
+    ? 'quickrupee_treatment.html?embedded=true'
+    : 'quickrupee_control.html?embedded=true';
+  var frame = document.getElementById('loanFrame');
+  frame.src = src;
+
+  var shown = false;
+  function show() {
+    if (shown) return;
+    shown = true;
+    interfaceStartTime = Date.now();
+    showScreen('interface');
+  }
+  frame.onload = function() { setTimeout(show, 200); };
+  setTimeout(show, 1500); // fallback if onload doesn't fire
+}
+
+// ---- Listen for iframe messages ----
+window.addEventListener('message', function(event) {
+  if (!event.data || !event.data.type) return;
+  if (event.data.type === 'quickrupee-resize') {
+    document.getElementById('loanFrame').style.height = event.data.height + 'px';
+  }
+  if (event.data.type === 'quickrupee-scroll-top') {
+    document.getElementById('loanFrame').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  if (event.data.type === 'quickrupee-complete') {
+    loanData = event.data.data;
+    interfaceDuration = Math.round((Date.now() - interfaceStartTime) / 1000);
+    console.log('Loan data received. Duration:', interfaceDuration, 'seconds');
+    setTimeout(function(){ showScreen('demographics'); }, 800);
+  }
+});
+
+// ---- Other field toggle ----
+function toggleOther(name) {
+  var f = document.getElementById(name + '-other');
+  if (f) f.disabled = false;
+}
+document.addEventListener('change', function(e) {
+  if (e.target.type !== 'radio') return;
+  var name = e.target.name;
+  var f = document.getElementById(name + '-other');
+  if (f) { f.disabled = (e.target.value !== 'other'); if (e.target.value !== 'other') f.value = ''; }
+});
+
+// ---- Validation ----
+function getAnswer(name) {
+  var sel = document.querySelector('input[name="'+name+'"]:checked');
+  if (!sel) return '';
+  if (sel.value === 'other') {
+    var f = document.getElementById(name + '-other');
+    return f && f.value.trim() ? 'Other: ' + f.value.trim() : 'Other';
+  }
+  return sel.value;
+}
+
+function goToFinancial() {
+  var valid = true, firstErr = null;
+  ['q2','q3','q4','q5','q6','q7'].forEach(function(name) {
+    var card = document.getElementById('card-' + name);
+    var sel = document.querySelector('input[name="'+name+'"]:checked');
+    if (!sel) { card.classList.add('error'); valid = false; if (!firstErr) firstErr = card; }
+    else if (sel.value === 'other') {
+      var f = document.getElementById(name + '-other');
+      if (f && !f.value.trim()) { card.classList.add('error'); valid = false; if (!firstErr) firstErr = card; }
+      else card.classList.remove('error');
+    } else card.classList.remove('error');
+  });
+  if (!valid && firstErr) { firstErr.scrollIntoView({behavior:'smooth',block:'center'}); return; }
+  showScreen('financial');
+}
+
+// ---- Financial literacy scoring ----
+var FL_CORRECT = { q8:'₹1,02,000', q9:'Less than today', q10:'More than ₹1,50,000', q11:'A mutual fund is less risky than buying shares in one company', q12:'₹5,000' };
+
+function submitAll() {
+  var valid = true, firstErr = null;
+  ['q8','q9','q10','q11','q12'].forEach(function(name) {
+    var card = document.getElementById('card-' + name);
+    var sel = document.querySelector('input[name="'+name+'"]:checked');
+    if (!sel) { card.classList.add('error'); valid = false; if (!firstErr) firstErr = card; }
+    else card.classList.remove('error');
+  });
+  if (!valid && firstErr) { firstErr.scrollIntoView({behavior:'smooth',block:'center'}); return; }
+
+  showScreen('submitting');
+
+  var flScore = 0, fl = {};
+  ['q8','q9','q10','q11','q12'].forEach(function(name, i) {
+    var ans = getAnswer(name);
+    var correct = (ans === FL_CORRECT[name]) ? 'Yes' : 'No';
+    if (correct === 'Yes') flScore++;
+    fl['fl' + (i+1) + 'Answer'] = ans;
+    fl['fl' + (i+1) + 'Correct'] = correct;
+  });
+
+  // Format timestamp in IST (Indian Standard Time)
+  var now = new Date();
+  var istOffset = 5.5 * 60 * 60 * 1000;
+  var ist = new Date(now.getTime() + istOffset);
+  var ts = ist.getUTCFullYear() + '-' + String(ist.getUTCMonth()+1).padStart(2,'0') + '-' + String(ist.getUTCDate()).padStart(2,'0') + ' ' + String(ist.getUTCHours()).padStart(2,'0') + ':' + String(ist.getUTCMinutes()).padStart(2,'0') + ':' + String(ist.getUTCSeconds()).padStart(2,'0') + ' IST';
+
+  var payload = {
+    timestamp: ts,
+    participantId: participantId,
+    participantNumber: participantNumber || 0,
+    condition: assignedCondition,
+    age: getAnswer('q2'), education: getAnswer('q3'), employment: getAnswer('q4'),
+    monthlyIncome: getAnswer('q5'), lendingExperience: getAnswer('q6'), lendingAppsCount: getAnswer('q7'),
+    fl1Answer: fl.fl1Answer, fl1Correct: fl.fl1Correct,
+    fl2Answer: fl.fl2Answer, fl2Correct: fl.fl2Correct,
+    fl3Answer: fl.fl3Answer, fl3Correct: fl.fl3Correct,
+    fl4Answer: fl.fl4Answer, fl4Correct: fl.fl4Correct,
+    fl5Answer: fl.fl5Answer, fl5Correct: fl.fl5Correct,
+    flScore: flScore,
+    interfaceDuration: interfaceDuration
+  };
+
+  if (loanData) {
+    payload.loanAmountRequested = loanData.loanAmountRequested;
+    payload.overborrowingAmount = loanData.overborrowingAmount;
+    payload.tenureSelected = loanData.tenureSelected;
+    payload.insuranceAdded = loanData.insuranceAdded;
+    payload.emiAmount = loanData.emiAmount;
+    payload.totalRepayment = loanData.totalRepayment;
+    payload.decisionConfidence = loanData.decisionConfidence;
+    payload.recallAPR = loanData.recallAPR;
+    payload.recallAPRCorrect = loanData.recallAPRCorrect;
+    payload.recallFee = loanData.recallFee;
+    payload.recallFeeCorrect = loanData.recallFeeCorrect;
+    payload.perceivedFairness = loanData.perceivedFairness;
+  }
+
+  console.log('FULL PAYLOAD:', JSON.stringify(payload, null, 2));
+
+  if (SHEET_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
+    console.warn('Demo mode — data logged to console only.');
+    setTimeout(function(){ showScreen('thankyou'); }, 1500);
+    return;
+  }
+
+  fetch(SHEET_URL, {
+    method: 'POST', mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  })
+  .then(function(){ showScreen('thankyou'); })
+  .catch(function(err){ console.error('Submit error:', err); showScreen('thankyou'); });
+}
+</script>
+</body>
+</html>
