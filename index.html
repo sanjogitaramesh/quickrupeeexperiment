@@ -276,22 +276,33 @@ function fetchCondition() {
 function startInterface() {
   showScreen('loading');
 
-  var resolved = false;
-  var done = function() {
-    if (resolved) return;
-    resolved = true;
-    if (!assignedCondition) {
-      assignedCondition = Date.now() % 2 === 0 ? 'Control' : 'Treatment';
-      participantNumber = -1;
-    }
-    loadIframe();
-  };
+  fetchCondition()
+    .then(function() { loadIframe(); })
+    .catch(function() {
+      if (!assignedCondition) {
+        assignedCondition = Date.now() % 2 === 0 ? 'Control' : 'Treatment';
+        participantNumber = -1;
+      }
+      loadIframe();
+    });
 
-  fetchCondition().then(done).catch(done);
-  setTimeout(done, 1500);
+  // Safety net: if fetch hangs beyond 8s, use random assignment
+  setTimeout(function() {
+    if (!iframeLoaded) {
+      console.warn('Fetch timed out — using random assignment');
+      if (!assignedCondition) {
+        assignedCondition = Date.now() % 2 === 0 ? 'Control' : 'Treatment';
+        participantNumber = -1;
+      }
+      loadIframe();
+    }
+  }, 8000);
 }
 
+var iframeLoaded = false;
 function loadIframe() {
+  if (iframeLoaded) return;
+  iframeLoaded = true;
   var src = assignedCondition === 'Treatment'
     ? 'quickrupee_treatment.html?embedded=true'
     : 'quickrupee_control.html?embedded=true';
