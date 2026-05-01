@@ -406,11 +406,15 @@ function submitAll() {
   var ist = new Date(now.getTime() + istOffset);
   var ts = ist.getUTCFullYear() + '-' + String(ist.getUTCMonth()+1).padStart(2,'0') + '-' + String(ist.getUTCDate()).padStart(2,'0') + ' ' + String(ist.getUTCHours()).padStart(2,'0') + ':' + String(ist.getUTCMinutes()).padStart(2,'0') + ':' + String(ist.getUTCSeconds()).padStart(2,'0') + ' IST';
 
+  // Use the condition from the iframe (what the participant actually saw)
+  // to ensure data always goes to the correct sheet
+  var actualCondition = (loanData && loanData.condition) ? loanData.condition : assignedCondition;
+
   var payload = {
     timestamp: ts,
     participantId: participantId,
     participantNumber: participantNumber || 0,
-    condition: assignedCondition,
+    condition: actualCondition,
     age: getAnswer('q2'), education: getAnswer('q3'), employment: getAnswer('q4'),
     monthlyIncome: getAnswer('q5'), lendingExperience: getAnswer('q6'), lendingAppsCount: getAnswer('q7'),
     fl1Answer: fl.fl1Answer, fl1Correct: fl.fl1Correct,
