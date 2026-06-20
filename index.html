@@ -27,6 +27,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);lin
 .option .other-field{border:none;border-bottom:1.5px solid var(--border);padding:4px 0;font-size:14px;font-family:'DM Sans',sans-serif;width:160px;background:transparent;color:var(--text);outline:none}
 .option .other-field:focus{border-color:var(--purple)}
 .option .other-field:disabled{opacity:.4}
+.likert{display:flex;align-items:center;gap:10px}
+.likert-end{font-size:12px;color:var(--muted);flex-shrink:0;width:80px;text-align:center;line-height:1.3}
+.likert-opts{display:flex;justify-content:space-around;flex:1;gap:4px}
+.likert-opts label{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding:6px 4px;border-radius:8px;transition:background .15s;flex:1}
+.likert-opts label:hover{background:#f8f5ff}
+.likert-opts input[type=radio]{width:22px;height:22px;accent-color:var(--purple);cursor:pointer}
+.likert-opts span{font-size:13px;color:var(--muted);font-weight:500}
 .section-bar{background:var(--purple);color:#fff;padding:14px 28px;border-radius:12px 12px 0 0;font-size:16px;font-weight:600;margin-top:28px}
 .section-desc{background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 12px 12px;padding:18px 28px;margin-bottom:16px;font-size:14px;color:var(--muted);font-style:italic;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .btn-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
@@ -54,36 +61,33 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);lin
 .error-msg{font-size:12px;color:var(--red);margin-top:6px;display:none}
 .q-card.error .error-msg{display:block}
 .step-info{text-align:center;font-size:12px;color:var(--muted);margin-bottom:16px}
-@media(max-width:500px){.container{padding:12px 8px 32px}.header-content{padding:20px 16px}.q-card{padding:18px 16px}.header-content h1{font-size:24px}.iframe-wrap{padding:0}.iframe-wrap iframe{max-width:100%;border-radius:0}.scenario-card{padding:24px 16px}.btn-row{margin-top:14px}.option{padding:10px 4px;gap:10px;font-size:15px}.option input[type=radio]{width:22px;height:22px}.btn{padding:12px 28px;font-size:15px;min-height:46px}.q-label{font-size:15px;margin-bottom:14px}}
+@media(max-width:500px){.container{padding:12px 8px 32px}.header-content{padding:20px 16px}.q-card{padding:18px 16px}.header-content h1{font-size:24px}.iframe-wrap{padding:0}.iframe-wrap iframe{max-width:100%;border-radius:0}.scenario-card{padding:24px 16px}.btn-row{margin-top:14px}.option{padding:10px 4px;gap:10px;font-size:15px}.option input[type=radio]{width:22px;height:22px}.btn{padding:12px 28px;font-size:15px;min-height:46px}.q-label{font-size:15px;margin-bottom:14px}.likert{flex-direction:column;gap:8px}.likert-end{width:auto;font-size:12px;font-weight:600}.likert-opts{width:100%;gap:2px}.likert-opts label{padding:8px 2px}.likert-opts input[type=radio]{width:24px;height:24px}}
 </style>
 </head>
 <body>
 <div class="container">
 
-<!-- CONSENT -->
+<!-- CONSENT + SCENARIO (merged) -->
 <div id="screen-consent" class="screen active">
   <div class="header-card"><div class="header-banner"></div><div class="header-content">
     <h1>Dark Side of Fintech: A study on dark patterns in digital lending interfaces</h1>
     <p>This survey is part of the doctoral research study on digital lending interfaces conducted by Sanjogita R, Doctoral Research Scholar, S.P. Jain Institute of Management and Research. It takes about 8–10 minutes. Your responses are completely anonymous.</p>
     <div class="req-note">* Indicates required question</div>
   </div></div>
+
   <div class="q-card" id="card-consent"><div class="q-label">I have read the information above and voluntarily agree to participate in this study.<span class="req"> *</span></div>
     <div class="options">
       <label class="option"><input type="radio" name="consent" value="yes"><span>Yes, I consent to participate</span></label>
       <label class="option"><input type="radio" name="consent" value="no"><span>No, I do not wish to participate</span></label>
     </div><div class="error-msg">Please select an option to continue.</div>
   </div>
-  <div class="btn-row"><button class="btn btn-primary" onclick="handleConsent()">Next →</button><span></span></div>
-</div>
 
-<!-- SCENARIO -->
-<div id="screen-scenario" class="screen">
-  <div class="header-card"><div class="header-banner"></div><div class="header-content"><h1>Loan Application Simulation</h1><p>You are about to interact with a loan application interface. Please treat it as if it were a real application.</p></div></div>
-  <div class="scenario-card"><h2>Before you begin</h2><p>Please read the following scenario carefully:</p><p class="important">IMPORTANT:</p>
+  <div class="scenario-card"><h2>Before you begin</h2><p>You will shortly interact with a loan application interface. Please treat it as if it were a real application.</p><p class="important">IMPORTANT:</p>
     <ul class="checklist"><li>Imagine you need ₹20,000 for an urgent medical expense</li><li>Complete the application as you naturally would</li><li>Read all information carefully</li></ul>
-    <p style="margin-top:16px;color:var(--text)">The interface will open below when you click "Begin." Take your time — there is no time pressure.</p>
+    <p style="margin-top:16px;color:var(--text)">First, we'll ask a few quick questions about you. Take your time — there is no time pressure.</p>
   </div>
-  <div class="btn-row"><button class="btn btn-primary" onclick="startInterface()">Begin loan application →</button><span></span></div>
+
+  <div class="btn-row"><button class="btn btn-primary" onclick="handleConsent()">Begin →</button><span></span></div>
 </div>
 
 <!-- LOADING -->
@@ -91,13 +95,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);lin
 
 <!-- INTERFACE -->
 <div id="screen-interface" class="screen">
-  <div class="step-info">Step 1 of 3 — Loan Application</div>
+  <div class="step-info">Step 2 of 6 — Loan Application</div>
   <div class="iframe-wrap"><iframe id="loanFrame" allow=""></iframe></div>
 </div>
 
 <!-- DEMOGRAPHICS -->
 <div id="screen-demographics" class="screen">
-  <div class="step-info">Step 2 of 3 — Background Survey</div>
+  <div class="step-info">Step 1 of 6 — About You</div>
   <div class="header-card"><div class="header-banner"></div><div class="header-content"><h1>A few questions about you</h1><p>This helps us understand different perspectives. All responses are completely anonymous and cannot be traced back to you.</p></div></div>
 
   <div class="q-card" id="card-q2"><div class="q-label">What is your age?<span class="req"> *</span></div><div class="options">
@@ -150,12 +154,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);lin
     <label class="option"><input type="radio" name="q7" value="None"><span>None</span></label>
   </div><div class="error-msg">This question is required.</div></div>
 
-  <div class="btn-row"><button class="btn btn-primary" onclick="goToFinancial()">Next →</button><span></span></div>
+  <div class="btn-row"><button class="btn btn-primary" onclick="startInterface()">Continue to loan application →</button><span></span></div>
 </div>
 
 <!-- FINANCIAL LITERACY -->
 <div id="screen-financial" class="screen">
-  <div class="step-info">Step 3 of 3 — Financial Literacy</div>
+  <div class="step-info">Step 3 of 6 — Financial Literacy</div>
   <div class="section-bar">Financial Literacy</div>
   <div class="section-desc">Answer based on what you know — do not look up answers. There are no penalties for wrong answers.</div>
 
@@ -198,7 +202,181 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);lin
   </div><div class="error-msg">This question is required.</div></div>
 
   <div class="btn-row">
-    <button class="btn btn-outline" onclick="showScreen('demographics')">← Back</button>
+    <button class="btn btn-primary" onclick="goToPressure()" style="margin-left:auto">Next →</button>
+  </div>
+</div>
+
+<!-- PSYCHOLOGICAL PRESSURE -->
+<div id="screen-pressure" class="screen">
+  <div class="step-info">Step 4 of 6 — Your Experience</div>
+  <div class="section-bar">Perceived Psychological Pressure</div>
+  <div class="section-desc">The following statements are about how you felt during the loan application. Please rate how much you agree with each statement. There is no right or wrong answer.</div>
+
+  <div class="q-card" id="card-p1"><div class="q-label">I felt rushed while making my loan decision<span class="req"> *</span></div>
+    <div class="likert"><span class="likert-end">Strongly disagree</span><div class="likert-opts">
+      <label><input type="radio" name="p1" value="1"><span>1</span></label>
+      <label><input type="radio" name="p1" value="2"><span>2</span></label>
+      <label><input type="radio" name="p1" value="3"><span>3</span></label>
+      <label><input type="radio" name="p1" value="4"><span>4</span></label>
+      <label><input type="radio" name="p1" value="5"><span>5</span></label>
+    </div><span class="likert-end">Strongly agree</span></div>
+    <div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-p2"><div class="q-label">I felt pressured to choose a higher loan amount than I originally intended<span class="req"> *</span></div>
+    <div class="likert"><span class="likert-end">Strongly disagree</span><div class="likert-opts">
+      <label><input type="radio" name="p2" value="1"><span>1</span></label>
+      <label><input type="radio" name="p2" value="2"><span>2</span></label>
+      <label><input type="radio" name="p2" value="3"><span>3</span></label>
+      <label><input type="radio" name="p2" value="4"><span>4</span></label>
+      <label><input type="radio" name="p2" value="5"><span>5</span></label>
+    </div><span class="likert-end">Strongly agree</span></div>
+    <div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-p3"><div class="q-label">I felt anxious or stressed at any point during the application<span class="req"> *</span></div>
+    <div class="likert"><span class="likert-end">Strongly disagree</span><div class="likert-opts">
+      <label><input type="radio" name="p3" value="1"><span>1</span></label>
+      <label><input type="radio" name="p3" value="2"><span>2</span></label>
+      <label><input type="radio" name="p3" value="3"><span>3</span></label>
+      <label><input type="radio" name="p3" value="4"><span>4</span></label>
+      <label><input type="radio" name="p3" value="5"><span>5</span></label>
+    </div><span class="likert-end">Strongly agree</span></div>
+    <div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-p4"><div class="q-label">I felt I might miss out on something if I did not act quickly<span class="req"> *</span></div>
+    <div class="likert"><span class="likert-end">Strongly disagree</span><div class="likert-opts">
+      <label><input type="radio" name="p4" value="1"><span>1</span></label>
+      <label><input type="radio" name="p4" value="2"><span>2</span></label>
+      <label><input type="radio" name="p4" value="3"><span>3</span></label>
+      <label><input type="radio" name="p4" value="4"><span>4</span></label>
+      <label><input type="radio" name="p4" value="5"><span>5</span></label>
+    </div><span class="likert-end">Strongly agree</span></div>
+    <div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-p5"><div class="q-label">I felt I had enough time to carefully read all the information before deciding<span class="req"> *</span></div>
+    <div class="likert"><span class="likert-end">Strongly disagree</span><div class="likert-opts">
+      <label><input type="radio" name="p5" value="1"><span>1</span></label>
+      <label><input type="radio" name="p5" value="2"><span>2</span></label>
+      <label><input type="radio" name="p5" value="3"><span>3</span></label>
+      <label><input type="radio" name="p5" value="4"><span>4</span></label>
+      <label><input type="radio" name="p5" value="5"><span>5</span></label>
+    </div><span class="likert-end">Strongly agree</span></div>
+    <div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-p6"><div class="q-label">I felt calm and in control throughout the application process<span class="req"> *</span></div>
+    <div class="likert"><span class="likert-end">Strongly agree</span><div class="likert-opts">
+      <label><input type="radio" name="p6" value="1"><span>1</span></label>
+      <label><input type="radio" name="p6" value="2"><span>2</span></label>
+      <label><input type="radio" name="p6" value="3"><span>3</span></label>
+      <label><input type="radio" name="p6" value="4"><span>4</span></label>
+      <label><input type="radio" name="p6" value="5"><span>5</span></label>
+    </div><span class="likert-end">Strongly disagree</span></div>
+    <div class="error-msg">This question is required.</div></div>
+
+  <div class="btn-row">
+    <button class="btn btn-outline" onclick="showScreen('financial')">← Back</button>
+    <button class="btn btn-primary" onclick="goToConfidence()">Next →</button>
+  </div>
+</div>
+
+<!-- DECISION CONFIDENCE -->
+<div id="screen-confidence" class="screen">
+  <div class="step-info">Step 5 of 6 — Your Experience</div>
+  <div class="section-bar">Decision Confidence</div>
+  <div class="section-desc">Please rate how much you agree with each of the following statements about your experience.<br><br><strong>Scale:</strong> 1 = Strongly disagree · 2 = Disagree · 3 = Neither agree nor disagree · 4 = Agree · 5 = Strongly agree</div>
+
+  <div class="q-card" id="card-d1"><div class="q-label">I am confident I understood the loan terms before I submitted the application<span class="req"> *</span></div>
+    <div class="likert"><span class="likert-end">Strongly disagree</span><div class="likert-opts">
+      <label><input type="radio" name="d1" value="1"><span>1</span></label>
+      <label><input type="radio" name="d1" value="2"><span>2</span></label>
+      <label><input type="radio" name="d1" value="3"><span>3</span></label>
+      <label><input type="radio" name="d1" value="4"><span>4</span></label>
+      <label><input type="radio" name="d1" value="5"><span>5</span></label>
+    </div><span class="likert-end">Strongly agree</span></div>
+    <div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-d2"><div class="q-label">I am satisfied with the loan amount I chose<span class="req"> *</span></div>
+    <div class="likert"><span class="likert-end">Strongly disagree</span><div class="likert-opts">
+      <label><input type="radio" name="d2" value="1"><span>1</span></label>
+      <label><input type="radio" name="d2" value="2"><span>2</span></label>
+      <label><input type="radio" name="d2" value="3"><span>3</span></label>
+      <label><input type="radio" name="d2" value="4"><span>4</span></label>
+      <label><input type="radio" name="d2" value="5"><span>5</span></label>
+    </div><span class="likert-end">Strongly agree</span></div>
+    <div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-d3"><div class="q-label">I felt I had enough information to make a good decision<span class="req"> *</span></div>
+    <div class="likert"><span class="likert-end">Strongly disagree</span><div class="likert-opts">
+      <label><input type="radio" name="d3" value="1"><span>1</span></label>
+      <label><input type="radio" name="d3" value="2"><span>2</span></label>
+      <label><input type="radio" name="d3" value="3"><span>3</span></label>
+      <label><input type="radio" name="d3" value="4"><span>4</span></label>
+      <label><input type="radio" name="d3" value="5"><span>5</span></label>
+    </div><span class="likert-end">Strongly agree</span></div>
+    <div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-d4"><div class="q-label">I am not sure whether I made the right choice<span class="req"> *</span></div>
+    <div class="likert"><span class="likert-end">Strongly disagree</span><div class="likert-opts">
+      <label><input type="radio" name="d4" value="1"><span>1</span></label>
+      <label><input type="radio" name="d4" value="2"><span>2</span></label>
+      <label><input type="radio" name="d4" value="3"><span>3</span></label>
+      <label><input type="radio" name="d4" value="4"><span>4</span></label>
+      <label><input type="radio" name="d4" value="5"><span>5</span></label>
+    </div><span class="likert-end">Strongly agree</span></div>
+    <div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-d5"><div class="q-label">I would want to re-read the loan terms before taking this loan in real life<span class="req"> *</span></div>
+    <div class="likert"><span class="likert-end">Strongly disagree</span><div class="likert-opts">
+      <label><input type="radio" name="d5" value="1"><span>1</span></label>
+      <label><input type="radio" name="d5" value="2"><span>2</span></label>
+      <label><input type="radio" name="d5" value="3"><span>3</span></label>
+      <label><input type="radio" name="d5" value="4"><span>4</span></label>
+      <label><input type="radio" name="d5" value="5"><span>5</span></label>
+    </div><span class="likert-end">Strongly agree</span></div>
+    <div class="error-msg">This question is required.</div></div>
+
+  <div class="btn-row">
+    <button class="btn btn-outline" onclick="showScreen('pressure')">← Back</button>
+    <button class="btn btn-primary" onclick="goToDetection()">Next →</button>
+  </div>
+</div>
+
+<!-- DARK PATTERN DETECTION -->
+<div id="screen-detection" class="screen">
+  <div class="step-info">Step 6 of 6 — Final Questions</div>
+  <div class="section-bar">What You Noticed</div>
+  <div class="section-desc">A few final questions about what you noticed during the application. Please answer honestly — this is not a test.</div>
+
+  <div class="q-card" id="card-x1"><div class="q-label">During the application, did you notice a countdown timer or any indication that an offer was time-limited?<span class="req"> *</span></div><div class="options">
+    <label class="option"><input type="radio" name="x1" value="Yes"><span>Yes</span></label>
+    <label class="option"><input type="radio" name="x1" value="No"><span>No</span></label>
+    <label class="option"><input type="radio" name="x1" value="Maybe, but I am not certain"><span>Maybe, but I am not certain</span></label>
+    <label class="option"><input type="radio" name="x1" value="Not sure what this means"><span>Not sure what this means</span></label>
+  </div><div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-x2"><div class="q-label">Did you see any messages about other users taking loans at the same time (e.g., "X people are viewing this offer right now")?<span class="req"> *</span></div><div class="options">
+    <label class="option"><input type="radio" name="x2" value="Yes"><span>Yes</span></label>
+    <label class="option"><input type="radio" name="x2" value="No"><span>No</span></label>
+    <label class="option"><input type="radio" name="x2" value="Maybe, but I am not certain"><span>Maybe, but I am not certain</span></label>
+    <label class="option"><input type="radio" name="x2" value="Not sure what this means"><span>Not sure what this means</span></label>
+  </div><div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-x3"><div class="q-label">Was a specific loan amount already selected or highlighted when the application loaded?<span class="req"> *</span></div><div class="options">
+    <label class="option"><input type="radio" name="x3" value="Yes, a higher amount was already selected"><span>Yes, a higher amount was already selected</span></label>
+    <label class="option"><input type="radio" name="x3" value="Yes, but I am not sure if it was higher or just a default"><span>Yes, but I am not sure if it was higher or just a default</span></label>
+    <label class="option"><input type="radio" name="x3" value="No, I had to choose the amount myself"><span>No, I had to choose the amount myself</span></label>
+    <label class="option"><input type="radio" name="x3" value="I do not remember"><span>I do not remember</span></label>
+  </div><div class="error-msg">This question is required.</div></div>
+
+  <div class="q-card" id="card-x4"><div class="q-label">How straightforward did you find it to locate the fee and repayment information during the application?<span class="req"> *</span></div><div class="options">
+    <label class="option"><input type="radio" name="x4" value="Very easy — it was clearly displayed"><span>Very easy — it was clearly displayed</span></label>
+    <label class="option"><input type="radio" name="x4" value="Somewhat easy"><span>Somewhat easy</span></label>
+    <label class="option"><input type="radio" name="x4" value="Neutral"><span>Neutral</span></label>
+    <label class="option"><input type="radio" name="x4" value="Somewhat difficult — I had to look for it"><span>Somewhat difficult — I had to look for it</span></label>
+    <label class="option"><input type="radio" name="x4" value="Very difficult — the information was hard to find"><span>Very difficult — the information was hard to find</span></label>
+  </div><div class="error-msg">This question is required.</div></div>
+
+  <div class="btn-row">
+    <button class="btn btn-outline" onclick="showScreen('confidence')">← Back</button>
     <button class="btn btn-primary" onclick="submitAll()">Submit all responses</button>
   </div>
 </div>
@@ -230,13 +408,13 @@ var interfaceDuration = 0;
 function showScreen(id) {
   var container = document.querySelector('.container');
   container.style.opacity = '0';
-  container.style.transition = 'opacity 0.2s ease';
+  container.style.transition = 'opacity 0.12s ease';
   setTimeout(function() {
     document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
     document.getElementById('screen-' + id).classList.add('active');
     window.scrollTo(0,0);
     container.style.opacity = '1';
-  }, 200);
+  }, 120);
 }
 
 function handleConsent() {
@@ -245,7 +423,7 @@ function handleConsent() {
   if (!sel) { card.classList.add('error'); return; }
   card.classList.remove('error');
   if (sel.value === 'no') { showScreen('declined'); return; }
-  showScreen('scenario');
+  showScreen('demographics');
 }
 
 // ---- Condition assignment ----
@@ -274,6 +452,20 @@ function fetchCondition() {
 
 // ---- Start interface with robust loading ----
 function startInterface() {
+  // Validate demographics first (Q2–Q7)
+  var valid = true, firstErr = null;
+  ['q2','q3','q4','q5','q6','q7'].forEach(function(name) {
+    var card = document.getElementById('card-' + name);
+    var sel = document.querySelector('input[name="'+name+'"]:checked');
+    if (!sel) { card.classList.add('error'); valid = false; if (!firstErr) firstErr = card; }
+    else if (sel.value === 'other') {
+      var f = document.getElementById(name + '-other');
+      if (f && !f.value.trim()) { card.classList.add('error'); valid = false; if (!firstErr) firstErr = card; }
+      else card.classList.remove('error');
+    } else card.classList.remove('error');
+  });
+  if (!valid && firstErr) { firstErr.scrollIntoView({behavior:'smooth',block:'center'}); return; }
+
   showScreen('loading');
 
   fetchCondition()
@@ -316,7 +508,7 @@ function loadIframe() {
     interfaceStartTime = Date.now();
     showScreen('interface');
   }
-  frame.onload = function() { setTimeout(show, 200); };
+  frame.onload = function() { setTimeout(show, 80); };
   setTimeout(show, 1500); // fallback if onload doesn't fire
 }
 
@@ -333,7 +525,7 @@ window.addEventListener('message', function(event) {
     loanData = event.data.data;
     interfaceDuration = Math.round((Date.now() - interfaceStartTime) / 1000);
     console.log('Loan data received. Duration:', interfaceDuration, 'seconds');
-    setTimeout(function(){ showScreen('demographics'); }, 800);
+    setTimeout(function(){ showScreen('financial'); }, 250);
   }
 });
 
@@ -360,28 +552,39 @@ function getAnswer(name) {
   return sel.value;
 }
 
-function goToFinancial() {
+// ---- Navigation between the new question screens ----
+function validateLikert(names, callback) {
   var valid = true, firstErr = null;
-  ['q2','q3','q4','q5','q6','q7'].forEach(function(name) {
+  names.forEach(function(name) {
     var card = document.getElementById('card-' + name);
     var sel = document.querySelector('input[name="'+name+'"]:checked');
     if (!sel) { card.classList.add('error'); valid = false; if (!firstErr) firstErr = card; }
-    else if (sel.value === 'other') {
-      var f = document.getElementById(name + '-other');
-      if (f && !f.value.trim()) { card.classList.add('error'); valid = false; if (!firstErr) firstErr = card; }
-      else card.classList.remove('error');
-    } else card.classList.remove('error');
+    else card.classList.remove('error');
   });
   if (!valid && firstErr) { firstErr.scrollIntoView({behavior:'smooth',block:'center'}); return; }
-  showScreen('financial');
+  callback();
+}
+
+// Financial literacy → Psychological Pressure (validate FL first)
+function goToPressure() {
+  validateLikert(['q8','q9','q10','q11','q12'], function(){ showScreen('pressure'); });
+}
+// Pressure → Confidence
+function goToConfidence() {
+  validateLikert(['p1','p2','p3','p4','p5','p6'], function(){ showScreen('confidence'); });
+}
+// Confidence → Detection
+function goToDetection() {
+  validateLikert(['d1','d2','d3','d4','d5'], function(){ showScreen('detection'); });
 }
 
 // ---- Financial literacy scoring ----
 var FL_CORRECT = { q8:'₹1,02,000', q9:'Less than today', q10:'More than ₹1,50,000', q11:'A mutual fund is less risky than buying shares in one company', q12:'₹5,000' };
 
 function submitAll() {
+  // Validate dark-pattern detection questions (final screen)
   var valid = true, firstErr = null;
-  ['q8','q9','q10','q11','q12'].forEach(function(name) {
+  ['x1','x2','x3','x4'].forEach(function(name) {
     var card = document.getElementById('card-' + name);
     var sel = document.querySelector('input[name="'+name+'"]:checked');
     if (!sel) { card.classList.add('error'); valid = false; if (!firstErr) firstErr = card; }
@@ -423,7 +626,15 @@ function submitAll() {
     fl4Answer: fl.fl4Answer, fl4Correct: fl.fl4Correct,
     fl5Answer: fl.fl5Answer, fl5Correct: fl.fl5Correct,
     flScore: flScore,
-    interfaceDuration: interfaceDuration
+    interfaceDuration: interfaceDuration,
+    // Perceived Psychological Pressure (6 items)
+    pressure1: getAnswer('p1'), pressure2: getAnswer('p2'), pressure3: getAnswer('p3'),
+    pressure4: getAnswer('p4'), pressure5: getAnswer('p5'), pressure6: getAnswer('p6'),
+    // Decision Confidence (5 items)
+    confidence1: getAnswer('d1'), confidence2: getAnswer('d2'), confidence3: getAnswer('d3'),
+    confidence4: getAnswer('d4'), confidence5: getAnswer('d5'),
+    // Dark Pattern Detection (4 items)
+    detect1: getAnswer('x1'), detect2: getAnswer('x2'), detect3: getAnswer('x3'), detect4: getAnswer('x4')
   };
 
   if (loanData) {
@@ -445,17 +656,21 @@ function submitAll() {
 
   if (SHEET_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
     console.warn('Demo mode — data logged to console only.');
-    setTimeout(function(){ showScreen('thankyou'); }, 1500);
+    showScreen('thankyou');
     return;
   }
 
+  // Fire the data off in the background — don't make the participant wait
+  // for Google's response (mode:no-cors means we can't read it anyway).
+  // keepalive ensures the send completes even if the page is closed.
   fetch(SHEET_URL, {
-    method: 'POST', mode: 'no-cors',
+    method: 'POST', mode: 'no-cors', keepalive: true,
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify(payload)
-  })
-  .then(function(){ showScreen('thankyou'); })
-  .catch(function(err){ console.error('Submit error:', err); showScreen('thankyou'); });
+  }).catch(function(err){ console.error('Submit error:', err); });
+
+  // Show thank-you right away
+  showScreen('thankyou');
 }
 </script>
 </body>
