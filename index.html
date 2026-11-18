@@ -99,6 +99,10 @@ h1:focus,h2:focus{outline:none}
 .status{text-align:center;padding:56px 8px}
 .status h1,.status h2{margin-bottom:10px}
 .status p{color:var(--muted)}
+.code-box{margin:24px auto 8px;padding:20px 16px;max-width:420px;border:2px solid var(--accent);border-radius:12px}
+.code-box .code-label{color:var(--ink);font-weight:600}
+.code-box .code{font-size:30px;font-weight:700;letter-spacing:1px;color:var(--ink);margin:8px 0;user-select:all;-webkit-user-select:all;word-break:break-all}
+.code-box .btn{margin:4px 0 12px}
 .spin{width:40px;height:40px;margin:0 auto 16px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spin{animation-duration:2.4s}.fill{transition:none}}
@@ -230,6 +234,10 @@ h1:focus,h2:focus{outline:none}
   "ty.body": "Your responses have been recorded successfully. This study examines how interface design affects financial decision-making.",
   "ty.name": "Sanjogita R",
   "ty.inst": "S.P. Jain Institute of Management and Research",
+  "ty.code": "Your completion code",
+  "ty.codeHelp": "Copy this code and paste it on Besample to confirm you finished the study.",
+  "btn.copy": "Copy code",
+  "copied": "Copied!",
   "fail.title": "Your responses were not sent",
   "fail.body": "Check your internet connection and try again. Your answers are still saved on this page.",
   "declined.title": "Thank you for your consideration",
@@ -351,6 +359,10 @@ h1:focus,h2:focus{outline:none}
   "ty.body": "आपके जवाब सफलतापूर्वक दर्ज हो गए हैं। यह अध्ययन देखता है कि ऐप और वेबसाइट का डिज़ाइन पैसों से जुड़े फ़ैसलों पर कैसे असर डालता है।",
   "ty.name": "संजोगिता आर.",
   "ty.inst": "एस.पी. जैन इंस्टीट्यूट ऑफ़ मैनेजमेंट एंड रिसर्च",
+  "ty.code": "आपका कम्प्लीशन कोड",
+  "ty.codeHelp": "इस कोड को कॉपी करें और Besample पर पेस्ट करें, ताकि पता चले कि आपने स्टडी पूरी कर ली है।",
+  "btn.copy": "कोड कॉपी करें",
+  "copied": "कॉपी हो गया!",
   "fail.title": "आपके जवाब नहीं भेजे जा सके",
   "fail.body": "अपना इंटरनेट कनेक्शन जाँचें और फिर से कोशिश करें। आपके जवाब इस पेज पर अब भी सुरक्षित हैं।",
   "declined.title": "आपके समय के लिए धन्यवाद",
@@ -472,6 +484,10 @@ h1:focus,h2:focus{outline:none}
   "ty.body": "तुमची उत्तरे यशस्वीरीत्या नोंदवली गेली आहेत. ॲप आणि वेबसाइटच्या डिझाइनचा आर्थिक निर्णयांवर कसा परिणाम होतो, याचा हा अभ्यास करतो.",
   "ty.name": "संजोगिता आर.",
   "ty.inst": "एस. पी. जैन इन्स्टिट्यूट ऑफ मॅनेजमेंट अँड रिसर्च",
+  "ty.code": "तुमचा कम्प्लीशन कोड",
+  "ty.codeHelp": "हा कोड कॉपी करा आणि Besample वर पेस्ट करा, म्हणजे तुम्ही अभ्यास पूर्ण केला आहे हे कळेल.",
+  "btn.copy": "कोड कॉपी करा",
+  "copied": "कॉपी झाला!",
   "fail.title": "तुमची उत्तरे पाठवता आली नाहीत",
   "fail.body": "तुमचे इंटरनेट कनेक्शन तपासा आणि पुन्हा प्रयत्न करा. तुमची उत्तरे या पेजवर अजूनही जतन आहेत.",
   "declined.title": "तुमच्या वेळेबद्दल धन्यवाद",
@@ -499,7 +515,7 @@ h1:focus,h2:focus{outline:none}
 // Replace with your deployed Google Apps Script Web App URL
 // >>> SHEET_URL — the ONLY place the Apps Script web app URL is set (the loan screens have none).
 // >>> To go live, swap it for the scholar's deployment URL. See SWITCHING.md.
-var SHEET_URL = "https://script.google.com/macros/s/AKfycbyOLrjNSs7QPSni0tfqzfSDTJaT1VGPJ6OGbaPAQDbgHSIpZP2-7-W11toAtVdiiO2Z/exec";
+var SHEET_URL = "https://script.google.com/macros/s/AKfycbxlQW9p1vmBnsTLpSdF2vkHu8XaZBXMwUV5tlpbCQ2tqFM98B6blilNfZlmWOCWM3b7zw/exec";
 var DEMO_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
 // ============================================================
 
@@ -609,7 +625,10 @@ $('app').innerHTML =
     DC_IDS.map(likertQ).join('')) + actions('pressure', 'toDetection', 'btn.next')) +
   screen('detection', 6, section('dp.title', T('dp.desc', 'p'), DP_IDS.map(choiceQ).join('')) + actions('confidence', 'submit', 'btn.submit')) +
   statusScreen('submitting', null, T('submitting', 'p'), true) +
-  statusScreen('thankyou', 'ty.title', T('ty.body', 'p') + '<p><br><strong data-i18n="ty.name"></strong><br><span data-i18n="ty.inst"></span></p>') +
+  statusScreen('thankyou', 'ty.title', T('ty.body', 'p') +
+    '<div class="code-box" id="codeBox" hidden>' + T('ty.code', 'p', 'code-label') + '<p class="code" id="completionCode"></p>' +
+    '<button type="button" class="btn primary" id="copyCode" data-act="copyCode" data-i18n="btn.copy"></button>' + T('ty.codeHelp', 'p') + '</div>' +
+    '<p><br><strong data-i18n="ty.name"></strong><br><span data-i18n="ty.inst"></span></p>') +
   statusScreen('failed', 'fail.title', T('fail.body', 'p') + '<div class="actions" style="justify-content:center;margin-top:20px"><button type="button" class="btn primary" style="margin:0" data-act="retry" data-i18n="btn.retry"></button></div>') +
   statusScreen('declined', 'declined.title', T('declined.body', 'p'));
 
@@ -727,6 +746,40 @@ var participantId = 'P_' + Date.now() + '_' + Math.random().toString(36).substr(
 var loanData = null, interfaceStartTime = 0, interfaceDuration = 0, iframeLoaded = false;
 var assignBusy = false, frameReady = false, wantInterface = false, slowTimer = null;
 var ASSIGN_DELAYS = [0, 1000, 2000, 4000, 8000]; // 5 attempts, then wait for the participant's retry
+
+// ---- Besample (participant recruitment) ----
+// Besample opens the survey as  ...?bpid=..&bnum=..&battempt=..&tg=..&tc=..&ta=..
+// After a successful submit, the thank-you screen shows completion code = bnum x BESAMPLE_KEY
+// (Besample's rule). Visitors without a Besample link see no code.
+var BESAMPLE_KEY = 98478; // Besample Researcher Key from your Besample account
+var besample = (function () {
+  var out = { bpid: '', bnum: '', battempt: '', tg: '', tc: '', ta: '' };
+  try {
+    var q = new URLSearchParams(window.location.search);
+    Object.keys(out).forEach(function (k) { out[k] = (q.get(k) || '').trim(); });
+  } catch (e) {}
+  return out;
+})();
+function completionCode() {
+  if (!/^\d+$/.test(besample.bnum)) return '';
+  if (typeof BigInt === 'function') return (BigInt(besample.bnum) * BigInt(BESAMPLE_KEY)).toString();
+  return String(Number(besample.bnum) * BESAMPLE_KEY);
+}
+function showCompletionCode() {
+  var code = completionCode();
+  $('codeBox').hidden = !code;
+  $('completionCode').textContent = code;
+}
+function copyCode() {
+  var b = $('copyCode');
+  function selectCode() { // fallback: highlight the code so it can be copied by hand
+    try { var r = document.createRange(); r.selectNodeContents($('completionCode'));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {}
+  }
+  try {
+    navigator.clipboard.writeText($('completionCode').textContent).then(function () { b.textContent = t('copied'); }, selectCode);
+  } catch (e) { selectCode(); }
+}
 
 // Only an OK, parseable JSON reply counts; HTML error pages and HTTP errors are failures.
 function readJson(r) {
@@ -875,6 +928,14 @@ function buildPayload() {
       .forEach(function (k) { payload[k] = loanData[k]; });
   }
   payload.language = lang; // new field, sent last; language shown when the participant submitted
+  // Besample fields (empty for visitors who did not come from Besample)
+  payload.besampleId = besample.bpid;
+  payload.besampleAttempt = besample.battempt;
+  payload.besampleNum = besample.bnum;
+  payload.besampleGender = besample.tg;
+  payload.besampleCountry = besample.tc;
+  payload.besampleAge = besample.ta;
+  payload.completionCode = completionCode();
   return payload;
 }
 
@@ -886,7 +947,7 @@ function submitAll() {
 }
 function send() {
   showScreen('submitting');
-  if (SHEET_URL === DEMO_URL) { console.log('Demo mode — payload:', payload); showScreen('thankyou'); return; }
+  if (SHEET_URL === DEMO_URL) { console.log('Demo mode — payload:', payload); showCompletionCode(); showScreen('thankyou'); return; }
   var ctrl = window.AbortController ? new AbortController() : null;
   var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 20000);
   // The reply is read (text/plain keeps this a simple CORS request, no preflight). Only {"status":"success"}
@@ -900,6 +961,7 @@ function send() {
   }).then(readJson).then(function (data) {
     if (data.status !== 'success') throw new Error(data.message || 'Unexpected reply');
     clearTimeout(timer);
+    showCompletionCode();
     showScreen('thankyou');
   }).catch(function (err) {
     clearTimeout(timer);
@@ -922,7 +984,8 @@ var ACTIONS = {
   toConfidence: function () { if (validate(PP_IDS)) showScreen('confidence'); },
   toDetection: function () { if (validate(DC_IDS)) showScreen('detection'); },
   submit: submitAll,
-  retry: send
+  retry: send,
+  copyCode: copyCode
 };
 document.addEventListener('click', function (e) {
   var b = e.target.closest('button');
